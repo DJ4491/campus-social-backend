@@ -5,4 +5,4 @@ pydantic
 supabase
 python-jose[cryptography]
 httpx
-pytest
+pytes

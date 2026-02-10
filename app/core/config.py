@@ -1,14 +1,17 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Optional
 
 class Settings(BaseSettings):
     SUPABASE_URL: str
     SUPABASE_SERVICE_ROLE_KEY: str
-    SUPABASE_ANON_KEY: str | None = None
+    SUPABASE_ANON_KEY: Optional[str] = None
     JWKS_URL: str
     AUDIENCE: str = "authenticated"
     ISSUER: str
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore"
+    )
 
-settings = Settings()
+settings = Settings() # pyright: ignore[reportCallIssue]
