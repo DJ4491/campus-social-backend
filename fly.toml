@@ -1,0 +1,22 @@
+app = "campus-social-backend"  # Replace with your Fly application name
+
+[build]
+  builder = "heroku/buildpacks:20"  # Use Heroku buildpack for Python
+
+[env]
+  PORT = "8080"  # Set your application port
+
+[[services]]
+  http_checks = []  # Optional HTTP health checks
+  processes = ["app"]  # Reference to your process name
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = "8080"  # Match with the PORT in [env]
+
+  [[services.concurrency]]
+    soft_limit = 100
+    hard_limit = 200
+
+[deploy]
+  release_command = "pip install -r requirements.txt"  # Post-deployment command
