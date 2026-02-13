@@ -1,8 +1,17 @@
+# app/crud/posts.py
 from app.services.supabase_service import service_supabase
-from typing import Dict, Any
 
 
-def create_post_db(post: Dict[str, Any]):
-    # post contains keys: user_id, content, image_path
-    res = service_supabase.table("posts").insert(post).execute()
-    return res.data
+def create_post_db():
+    resp = (
+        service_supabase.table("posts")
+        .select(
+            "id,created_at,title,desc,image,likes,author_id,"
+            + "author:profiles!posts_author_id_fkey(id,username,display_name,avatar_url)"
+        )
+        .order("created_at", desc=True)
+        .execute()
+    )
+
+    # resp is a PostgrestResponse object; .data is a Python list/dict
+    return resp.data
