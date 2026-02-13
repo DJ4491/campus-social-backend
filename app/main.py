@@ -1,5 +1,5 @@
 from typing import Union
-from app.routes import health, mutual_friend, recommendations, admin
+from app.routes import health, mutual_friend, recommendations, admin,posts_you_may_like
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,3 +21,4 @@ app.include_router(
 )
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
 app.include_router(mutual_friend.router, prefix="/api/mutual_friends", tags=["Mutual Friend"])
+app.include_router(posts_you_may_like.router, prefix="/api/posts_you_may_like", tags=["Posts Recommendation"])
