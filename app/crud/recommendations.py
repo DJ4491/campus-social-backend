@@ -65,17 +65,17 @@ def get_posts_recommendations_for_user(user_id):
 
         created_by_user = set()
 
-        for p_id in post_author_map:
-            if post_author_map[p_id] == user_id:
+        for p_id, auth_id in post_author_map.items():
+            if auth_id == user_id:
                 created_by_user.add(p_id)
 
         data["created_by_user"] = created_by_user
 
-        likes_data = likes_response.data
-        data["users"] = response.data
+        likes_data = likes_response.data or []
+        data["users"] = response.data or []
 
         for user in data["users"]:
-            if "liked" not in user:
+            if "liked_posts" not in user:
                 user["liked_posts"] = []
 
             for post in likes_data:
