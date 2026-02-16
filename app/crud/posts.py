@@ -2,7 +2,11 @@
 from app.services.supabase_service import service_supabase
 
 
-def create_post_db():
+def create_post_db(limit: int, offset: int):
+
+    start = offset
+    end = offset + limit - 1
+
     resp = (
         service_supabase.table("posts")
         .select(
@@ -10,6 +14,7 @@ def create_post_db():
             + "author:profiles!posts_author_id_fkey(id,username,display_name,avatar_url)"
         )
         .order("created_at", desc=True)
+        .range(start,end)
         .execute()
     )
 

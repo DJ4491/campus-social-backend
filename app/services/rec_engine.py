@@ -35,19 +35,22 @@ def simple_mutual_rec(user_id: str, data, limit: int = 10):  # API consumer can 
     return [user_id for user_id, mutual_count in top_pairs]
 
 
-def simple_page_rec(user_id: str, data):
+def simple_page_rec(user_id: str, data, limit: int = 10):
     # Structuring the Data in a new list with users id and liked_pages
+    if not isinstance(data, dict) or "users" not in data:
+        raise ValueError("Invalid data format: expected {'users': [...]}")
+    
     user_Posts = {}
     for user in data["users"]:
         user_Posts[user["id"]] = set(user["liked_posts"])
 
     # Checking if the user is in user_pages or not
     if user_id not in user_Posts:
-        return []
+        raise KeyError("User not found")
 
     # Creating a new set that groups the user's liked pages in ids
     user_liked_posts = user_Posts[user_id]
-    page_suggestions = {}  # Score based on which the recommendation system will work
+    page_suggestions = Counter()  # Score based on which the recommendation system will work
     
     created_by_user = data.get("created_by_user",set())
 
@@ -64,8 +67,9 @@ def simple_page_rec(user_id: str, data):
                 if post in created_by_user:
                     continue
                 # Page id : score
-                page_suggestions[post] = page_suggestions.get(post, 0) + len(shared_posts)
+                page_suggestions[post] += len(shared_posts)
         # Good'ol sorting
-    sorted_posts = sorted(page_suggestions.items(), key=lambda x: x[1], reverse=True)
+    # sorted_posts = sorted(page_suggestions.items(), key=lambda x: x[1], reverse=True)
+    sorted_posts = heapq.nlargest(limit,page_suggestions.items(), key=lambda x: x[1])
         # Returning the page_id that needs to be recommended
     return [page_id for page_id, score in sorted_posts]
